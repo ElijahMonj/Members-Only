@@ -5,7 +5,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+const { check, validationResult } = require('express-validator');
 const mongoDb = "mongodb+srv://admin:admin@cluster0.3hfbcxb.mongodb.net/?retryWrites=true&w=majority";
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
@@ -15,7 +15,8 @@ const User = mongoose.model(
   "User",
   new Schema({
     username: { type: String, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    isAdmin: { type: Boolean, required: true }
   })
 );
 
@@ -31,6 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
   res.render("index", { user: req.user });
 });
+//homepage
 app.get("/log-out", (req, res, next) => {
   req.logout(function (err) {
     if (err) {
@@ -39,18 +41,48 @@ app.get("/log-out", (req, res, next) => {
     res.redirect("/");
   });
 });
+//logout
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
-app.post("/sign-up", (req, res, next) => {
+//sign up page
+app.post("/sign-up",[
+  check('username').notEmpty(),
+  check('password').isLength({ min: 5 }),
+  check('passwordConfirmation').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Password confirmation does not match password');
+      
+    }
+    return true;
+  }),
+  
+], (req, res, next) => {
+  const errors=validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({ errors: errors.array() });
+  }else{
+    console.log("----------------")
+  let x;
+  if (req.body.isAdmin) {
+    x=true
+  } else {
+    x=false
+  }
+  console.log(x);
   const user = new User({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    isAdmin: x,
   }).save(err => {
     if (err) { 
       return next(err);
     }
     res.redirect("/");
   });
+  }
+  
+
 });
+//write on database
 passport.use(
   new LocalStrategy((username, password, done) => {
     User.findOne({ username: username }, (err, user) => {
@@ -67,6 +99,7 @@ passport.use(
     });
   })
 );
+//check if user is valid
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -76,6 +109,8 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
+//for cookie
+
 app.post(
   "/log-in",
   passport.authenticate("local", {
@@ -83,5 +118,5 @@ app.post(
     failureRedirect: "/"
   })
 );
-
+//to create a log in post
 app.listen(3000, () => console.log("app listening on port 3000!"));
