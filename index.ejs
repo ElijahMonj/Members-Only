@@ -6,18 +6,37 @@
 </head>
 <body>
   <% if (user) {%>
-    <h1>WELCOME BACK <%= user.username %></h1>
-    <a href="/log-out">LOG OUT</a>
+    <div>
+      <h1>WELCOME BACK <%= user.username %></h1>
+      <a href="/log-out">LOG OUT</a>
+    </div>
+    <div>
+      <form action="/new" method="POST">
+        <h2>Write new Message</h2>
+        <input id="usr" name="usr" type="hidden" value= <%= user.username %>>   
+        <textarea name="newMessage" id="newMessage" cols="30" rows="10"></textarea>
+        <input type="submit">
+      </form> 
+    </div>
+    <div>
+      <h1>Feed</h1>
+      
+    </div>
   <% } else { %>
-    <h1>please log in</h1>
-    <form action="/log-in" method="POST">
-      <label for="username">Username</label>
-      <input name="username" placeholder="username" type="text" />
-      <label for="password">Password</label>
-      <input name="password" type="password" />
-      <button>Log In</button>
-      <a href="/sign-up">sign up</a>
+    <div>
+      <h1>please log in</h1>
+        <form action="/log-in" method="POST">
+          <label for="username">Username</label>
+          <input name="username" placeholder="username" type="text" />
+          <label for="password">Password</label>
+          <input name="password" type="password" />
+          <button>Log In</button>
+          <a href="/sign-up">sign up</a>
     </form>
+    </div>
+    <div>
+     
+    </div>
   <%}%>
 </body>
 </html>

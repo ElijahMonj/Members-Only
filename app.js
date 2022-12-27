@@ -119,4 +119,30 @@ app.post(
   })
 );
 //to create a log in post
+
+
+//TEST----
+app.post('/new', function(req,res){
+  console.log()
+  var MongoClient = require('mongodb').MongoClient;
+  
+
+MongoClient.connect(mongoDb, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db("test");
+  var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  var today  = new Date();
+  var newStory = [
+    { name: req.body.usr , message: req.body.newMessage, time: today.toLocaleDateString("en-US", options)},   
+  ];
+  dbo.collection("messages").insertMany(newStory, function(err, res) {
+    if (err) throw err;
+    
+    db.close();
+  });
+});
+
+  res.redirect('/')
+})
+//TEST----
 app.listen(3000, () => console.log("app listening on port 3000!"));
