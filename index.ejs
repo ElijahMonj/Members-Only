@@ -11,28 +11,30 @@
     <% if (user.isAdmin==true) {%>
       <div class="row align-items-center"  style="min-height: 100vh;">
     <div class="col">
-      <h1 class="">Welcome to the club, <%= user.username %>.</h1>
-      <a href="/log-out" class="btn btn-primary mb-5">LOG OUT</a>
+      <h1 class="">Welcome to the club, <%= user.fullname %>.</h1>
+      
     
       <form action="/new" method="POST">
-        <h3>Write new Message</h3>
-        <input id="usr" name="usr" type="hidden" value= <%= user.username %>>   
-        <textarea name="newMessage" id="newMessage" class="form-control" rows="6"></textarea>
+        <h3>Write a new Message</h3>
+        <input id="usr" name="usr" type="hidden" value= <%= user.fullname %>>   
+        <textarea name="newMessage" id="newMessage" class="form-control" rows="6" style="resize: none;"></textarea>
         <br>
         <input type="submit" class="btn btn-success">
+        <br><br>
+        <a href="/log-out" class="btn btn-primary">Log-out</a>
       </form> 
     </div>
       <div class="col text-center">
-        <h2 class="mb-5">Message Feed</h2>
+        <h2 class="my-5">Message Feed</h2>
         <% for (var i = 0; i < messages.length; i++) { %>
-        <div class="card text-white bg-dark mx-auto" style="max-width: 20rem;">
+        <div class="card text-white bg-dark mx-auto mb-3" style="max-width: 20rem;">
           <div class="card-header"><%= messages[i].time %></div>
           <div class="card-body">
             <h5 class="card-title"><%= messages[i].name %></h5>
             <p class="card-text"><%= messages[i].message %></p>
             <form action="/delete " method="POST">
               <input id="usr" name="usr" type="hidden" value= <%= messages[i]._id %>>
-              <input type="submit" value="delete" class="btn btn-light">
+              <input type="submit" value="Delete" class="btn btn-light">
             </form>
           </div>
         </div>
@@ -42,9 +44,67 @@
     </div>
     <% } else { %>
       <% if(user.isMember){ %>
-        <h1>members</h1>
+        <div class="row align-items-center"  style="min-height: 100vh;">
+          <div class="col">
+            <h1 class="">Welcome to the club, <%= user.fullname %>.</h1>
+            
+          
+            <form action="/new" method="POST">
+              <h3>Write a new Message</h3>
+              <input id="usr" name="usr" type="hidden" value= <%= user.fullname %>>   
+              <textarea name="newMessage" id="newMessage" class="form-control" rows="6" style="resize: none;"></textarea>
+              <br>
+              <input type="submit" class="btn btn-success">
+              <br><br>
+              <a href="/log-out" class="btn btn-primary">Log-out</a>
+            </form> 
+          </div>
+            <div class="col text-center">
+              <h2 class="my-5">Message Feed</h2>
+              <% for (var i = 0; i < messages.length; i++) { %>
+              <div class="card text-white bg-dark mx-auto mb-3" style="max-width: 20rem;">
+                <div class="card-header"><%= messages[i].time %></div>
+                <div class="card-body">
+                  <h5 class="card-title"><%= messages[i].name %></h5>
+                  <p class="card-text"><%= messages[i].message %></p>
+                 
+                </div>
+              </div>
+              <% } %>
+            </div>
+      
+          </div>
       <% } else{ %>  
-        <h1>not members</h1>
+        <div class="row align-items-center"  style="min-height: 100vh;">
+          <div class="col">
+            <h1 class="">Welcome to the club, <%= user.fullname %>.</h1>
+            
+          
+            <form action="/new" method="POST">
+              <h3>Write a new Message</h3>
+              <input id="usr" name="usr" type="hidden" value= <%= user.fullname %>>   
+              <textarea name="newMessage" id="newMessage" class="form-control" rows="6" style="resize: none;"></textarea>
+              <br>
+              <input type="submit" class="btn btn-success">
+              <br><br>
+              <a href="/log-out" class="btn btn-primary">Log-out</a>
+            </form> 
+          </div>
+            <div class="col text-center">
+              <h2 class="my-5">Message Feed</h2>
+              <% for (var i = 0; i < messages.length; i++) { %>
+              <div class="card text-white bg-dark mx-auto mb-3" style="max-width: 20rem;">
+                <div class="card-header"><%= messages[i].time %></div>
+                <div class="card-body">
+                  <h5 class="card-title">Anonymous</h5>
+                  <p class="card-text"><%= messages[i].message %></p>
+                 
+                </div>
+              </div>
+              <% } %>
+            </div>
+      
+          </div>
      <% } %>
       <%}%>
   <% } 
@@ -52,16 +112,9 @@
   else { %>
     <div class="row align-items-center" style="min-height: 100vh;">
     <div class="col">
-        <h1>please log in</h1>
-        <form action="/log-in" method="POST">
-          <label for="username">Username</label>
-          <input name="username" placeholder="username" type="text" />
-          <label for="password">Password</label>
-          <input name="password" type="password" />
-          <button>Log In</button>
-          <a href="/sign-up">sign up</a>
-        </form>
-        <form>
+        <h1 class="w-50 mx-auto">Please Log-in to write message.</h1>
+        
+        <form action="/log-in" method="POST" class="w-50 mx-auto">
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">    
@@ -71,7 +124,11 @@
             <input type="password" class="form-control" name="password">
             
           </div>
-          <button class="btn btn-primary">log-in</button>
+          <button class="btn btn-primary">Log-in</button>
+          <div class="d-flex align-items-center justify-content-center pb-4">
+                    <p class="mb-0 me-2">Don't have an account?</p>
+                    <a href="/sign-up" class="btn btn-outline-primary">Register</a>
+                  </div>
         </form>
     </div>
     <div class="col text-center">

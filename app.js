@@ -15,6 +15,7 @@ db.on("error", console.error.bind(console, "mongo connection error"));
 const User = mongoose.model(
   "User",
   new Schema({
+    fullname: { type: String, required: true },
     username: { type: String, required: true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, required: true },
@@ -57,6 +58,7 @@ app.get("/log-out", (req, res, next) => {
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 //sign up page
 app.post("/sign-up",[
+  check('fullname').notEmpty(),
   check('username').notEmpty(),
   check('password').isLength({ min: 5 }),
   check('passwordConfirmation').custom((value, { req }) => {
@@ -72,19 +74,13 @@ app.post("/sign-up",[
   if(!errors.isEmpty()){
     return res.status(400).json({ errors: errors.array() });
   }else{
-    console.log("----------------")
-  let x;
-  if (req.body.isAdmin) {
-    x=true
-  } else {
-    x=false
-  }
-  console.log(x);
+  
   const user = new User({
+    fullname: req.body.fullname,
     username: req.body.username,
     password: req.body.password,
     isMember:false,
-    isAdmin: x,
+    isAdmin: false,
   }).save(err => {
     if (err) { 
       return next(err);
