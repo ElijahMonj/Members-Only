@@ -2,36 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <title>Members Only</title>
 </head>
-<body>
+<body class="container text-center container-fluid">
   <% if (user) {%>
     <% if (user.isAdmin==true) {%>
-    <div>
-      <h1>WELCOME BACK <%= user.username %></h1>
-      <a href="/log-out">LOG OUT</a>
+      <div class="row align-items-center"  style="min-height: 100vh;">
+    <div class="col">
+      <h1 class="">Welcome to the club, <%= user.username %>.</h1>
+      <a href="/log-out" class="btn btn-primary mb-5">LOG OUT</a>
     
       <form action="/new" method="POST">
-        <h2>Write new Message</h2>
+        <h3>Write new Message</h3>
         <input id="usr" name="usr" type="hidden" value= <%= user.username %>>   
-        <textarea name="newMessage" id="newMessage" cols="30" rows="10"></textarea>
-        <input type="submit">
+        <textarea name="newMessage" id="newMessage" class="form-control" rows="6"></textarea>
+        <br>
+        <input type="submit" class="btn btn-success">
       </form> 
     </div>
-    
-    <div>
-      <h1>Feed</h1>
-      <% for (var i = 0; i < messages.length; i++) { %>
-      <div><%= messages[i].name %>
-       
-      <%= messages[i].message %>
-      <%= messages[i].time %></div>
-      <form action="/delete " method="POST">
-        <input id="usr" name="usr" type="" value= <%= messages[i]._id %>>
-        <input type="submit" value="delete">
-      </form>
-      <% } %>
-      
+      <div class="col text-center">
+        <h2 class="mb-5">Message Feed</h2>
+        <% for (var i = 0; i < messages.length; i++) { %>
+        <div class="card text-white bg-dark mx-auto" style="max-width: 20rem;">
+          <div class="card-header"><%= messages[i].time %></div>
+          <div class="card-body">
+            <h5 class="card-title"><%= messages[i].name %></h5>
+            <p class="card-text"><%= messages[i].message %></p>
+            <form action="/delete " method="POST">
+              <input id="usr" name="usr" type="hidden" value= <%= messages[i]._id %>>
+              <input type="submit" value="delete" class="btn btn-light">
+            </form>
+          </div>
+        </div>
+        <% } %>
+      </div>
+
     </div>
     <% } else { %>
       <% if(user.isMember){ %>
@@ -43,8 +50,9 @@
   <% } 
   
   else { %>
-    <div>
-      <h1>please log in</h1>
+    <div class="row align-items-center" style="min-height: 100vh;">
+    <div class="col">
+        <h1>please log in</h1>
         <form action="/log-in" method="POST">
           <label for="username">Username</label>
           <input name="username" placeholder="username" type="text" />
@@ -52,10 +60,36 @@
           <input name="password" type="password" />
           <button>Log In</button>
           <a href="/sign-up">sign up</a>
-    </form>
+        </form>
+        <form>
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">    
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password">
+            
+          </div>
+          <button class="btn btn-primary">log-in</button>
+        </form>
     </div>
-    <div>     
+    <div class="col text-center">
+        <h2 class="mb-5">Message Feed</h2>
+        <% for (var i = 0; i < messages.length; i++) { %>
+        <div class="card text-white bg-dark mx-auto" style="max-width: 20rem;">
+          <div class="card-header"><%= messages[i].time %></div>
+          <div class="card-body">
+            <h5 class="card-title">Anonymous</h5>
+            <p class="card-text"><%= messages[i].message %></p>
+            
+          </div>
+        </div>
+        <% } %>
+      </div>
     </div>
   <%}%>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
 </body>
 </html>

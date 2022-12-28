@@ -186,15 +186,7 @@ MongoClient.connect(mongoDb, function(err, db) {
     db.close();
   });
 });
-async function getValueAsync() {
-  
-  let coll = mongoose.connection.db.collection("messages");
-  let data = await coll.find({}, {limit:10, sort:{name:-1}}).toArray();
-  console.log("-------------------------")
-  console.log(data)
-  console.log("-------------------------")
-}
-getValueAsync()
+
 setTimeout(refresh, 500);
   function refresh(){
     res.redirect('/')
