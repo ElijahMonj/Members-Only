@@ -9,6 +9,7 @@ const { check, validationResult } = require('express-validator');
 const mongoDb = "mongodb+srv://admin:admin@cluster0.3hfbcxb.mongodb.net/?retryWrites=true&w=majority";
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
+
 db.on("error", console.error.bind(console, "mongo connection error"));
 
 const User = mongoose.model(
@@ -30,7 +31,17 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-  res.render("index", { user: req.user });
+  
+  async function getValueAsync() {
+    let coll = mongoose.connection.db.collection("messages");
+    let data = await coll.find({}, {limit:10, sort:{name:-1}}).toArray();
+    console.log(data)
+    res.render("index", { user: req.user, messages: data });
+  }
+  getValueAsync()
+  
+  
+  
 });
 //homepage
 app.get("/log-out", (req, res, next) => {
@@ -76,6 +87,8 @@ app.post("/sign-up",[
     if (err) { 
       return next(err);
     }
+    
+    
     res.redirect("/");
   });
   }
@@ -123,17 +136,20 @@ app.post(
 
 //TEST----
 app.post('/new', function(req,res){
-  console.log()
+  
   var MongoClient = require('mongodb').MongoClient;
   
 
 MongoClient.connect(mongoDb, function(err, db) {
   if (err) throw err;
   var dbo = db.db("test");
-  var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  var today  = new Date();
+  let date = new Date();  
+  let options = {  
+    weekday: "long", year: "numeric", month: "short",  
+    day: "numeric", hour: "2-digit", minute: "2-digit"  
+  };  
   var newStory = [
-    { name: req.body.usr , message: req.body.newMessage, time: today.toLocaleDateString("en-US", options)},   
+    { name: req.body.usr , message: req.body.newMessage, time:date.toLocaleTimeString("en-us", options)},   
   ];
   dbo.collection("messages").insertMany(newStory, function(err, res) {
     if (err) throw err;
@@ -141,8 +157,15 @@ MongoClient.connect(mongoDb, function(err, db) {
     db.close();
   });
 });
-
+async function getValueAsync() {
+  let coll = mongoose.connection.db.collection("messages");
+  let data = await coll.find({}, {limit:10, sort:{name:-1}}).toArray();
+  console.log("-------------------------")
+  console.log(data)
+  console.log("-------------------------")
+}
+getValueAsync()
   res.redirect('/')
 })
 //TEST----
-app.listen(3000, () => console.log("app listening on port 3000!"));
+app.listen(3001, () => console.log("app listening on port 3000!"));
