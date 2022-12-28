@@ -6,11 +6,11 @@
 </head>
 <body>
   <% if (user) {%>
+    <% if (user.isAdmin==true) {%>
     <div>
       <h1>WELCOME BACK <%= user.username %></h1>
       <a href="/log-out">LOG OUT</a>
-    </div>
-    <div>
+    
       <form action="/new" method="POST">
         <h2>Write new Message</h2>
         <input id="usr" name="usr" type="hidden" value= <%= user.username %>>   
@@ -18,15 +18,31 @@
         <input type="submit">
       </form> 
     </div>
+    
     <div>
       <h1>Feed</h1>
       <% for (var i = 0; i < messages.length; i++) { %>
       <div><%= messages[i].name %>
+       
       <%= messages[i].message %>
       <%= messages[i].time %></div>
+      <form action="/delete " method="POST">
+        <input id="usr" name="usr" type="" value= <%= messages[i]._id %>>
+        <input type="submit" value="delete">
+      </form>
       <% } %>
+      
     </div>
-  <% } else { %>
+    <% } else { %>
+      <% if(user.isMember){ %>
+        <h1>members</h1>
+      <% } else{ %>  
+        <h1>not members</h1>
+     <% } %>
+      <%}%>
+  <% } 
+  
+  else { %>
     <div>
       <h1>please log in</h1>
         <form action="/log-in" method="POST">
@@ -38,8 +54,7 @@
           <a href="/sign-up">sign up</a>
     </form>
     </div>
-    <div>
-     
+    <div>     
     </div>
   <%}%>
 </body>
